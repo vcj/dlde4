@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Choose Map</title>
+    <style>
+        body {
+            background-color: #002e6d;
+            color: #ffffff;
+            font-family: 'Source Sans Pro', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        p {
+            text-align: center;
+            width: auto;
+            padding-left: 20%;
+            padding-right: 20%;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            color: #002e6d;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the SBA Office of Disaster Recovery and Resilience<br>Disaster Loan Data Explorer</h1>
+    <p>This DART-developed tool takes nearly 20 years of the agency's disaster lending data and combines it with other relevant data to give users a full picture of the disaster loan landscape. If you want to look into the Recovery Index, demographics, and other indicators by county, choose Research. If you want to view specific counties by geography and/or for a recent disaster, choose Response. </p>
+    <p>Please select an option:</p>
+    <button onclick="redirectToMap('mapA.html')">Research</button>
+    <button onclick="redirectToMap('mapB.html')">Response</button>
+    <a href="datadic.csv" download><button>Download Data Dictionary</button></a>
+    <a href="help.pdf" download><button>Download Help Documentation</button></a>
+    
+    
+
+    <script>
+        function redirectToMap(url) {
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>
