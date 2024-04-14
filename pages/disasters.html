@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>DLDE</title>
+
+  <style>
+    html,
+    body,
+    #heading {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      color: "#002e6d";
+    }
+
+    .header {
+      text-align: left;
+      background: #002e6d;
+      color: white; 
+      font-family: "Avenir Next", sans-serif; 
+      height: 10%;
+      display: flex;
+      align-items: center;
+      font-size: 24pt;
+    }
+
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+      float: left;
+    }
+
+    #dropdown {
+      position: absolute;
+      bottom: 130px;
+      right: 10px;
+      z-index: 1000;
+      background-color: white;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+
+      
+#resetButton {
+    position: absolute;
+    bottom: 05px;
+    right: 10px;
+    padding: 10px;
+    background-color: #002e6d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+      
+      
+    #exportButton {
+    position: absolute;
+    bottom: 85px;
+    right: 10px;
+    padding: 10px;
+    background-color: #002e6d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+      
+        #clearSelectionButton {
+    position: absolute;
+    bottom: 45px;
+    right: 10px;
+    padding: 10px;
+    background-color: #002e6d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }  
+      .popup-content {
+  padding: 10px;
+  width: 500px;
+  background-color: white;
+  color: #002e6d;
+}
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/"></script>
+
+</head>
+<body>
+
+  <div class="header">&#160;&#160;&#160;Disaster Loan Data Explorer</div>
+  <div id="viewDiv"></div>
+<!--  <div id="dropdown">-->
+<!--
+    <select id="attributeSelect">
+      <option value="">Select a Map</option>
+      <option value="Grouping">Recovery Index</option>
+      <option value="RISK_RATNG">Risk Rating</option>
+      <option value="SOVI_RATNG">Social Vulnerability</option>
+      <option value="RESL_RATNG">Community Resilience</option>
+      <option value="CFLD_RISKR">Coastal Flooding Risk</option>
+      <option value="CWAV_RISKR">Cold Wave Risk</option>
+      <option value="DRGT_RISKR">Drought Risk</option>
+      <option value="ERQK_RISKR">Earthquake Risk</option>
+      <option value="HWAV_RISKR">Heat Wave Risk</option>
+      <option value="HRCN_RISKR">Hurricane Risk</option>
+      <option value="ISTM_RISKR">Ice Storm Risk</option>
+      <option value="RFLD_RISKR">Riverine Flooding Risk</option>
+      <option value="SWND_RISKR">Strong Wind Risk</option>
+      <option value="TRND_RISKR">Tornado Risk</option>
+      <option value="WFIR_RISKR">Wildfire Risk</option>
+      <option value="WNTW_RISKR">Winter Weather Risk</option>
+    </select>
+-->
+<!--  </div>-->
+  <div id="legend"></div>
+
+  <script>
+    require([
+      "esri/config",
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/widgets/Search",
+      "esri/widgets/Popup",
+//      "esri/widgets/Print",
+      "esri/widgets/Expand",
+     "esri/widgets/Legend",
+      "esri/widgets/LayerList",
+      "esri/widgets/Sketch",
+      "esri/layers/GraphicsLayer",
+      "esri/layers/GroupLayer",
+      "esri/layers/FeatureLayer"
+        
+    ], function(esriConfig,
+                 Map,
+                 MapView,
+                 Search,
+                 Popup,
+//                 Print,
+                 Expand,
+                 Legend,
+                 LayerList,
+                 Sketch,
+                 GraphicsLayer,
+                 GroupLayer,
+                 FeatureLayer) {
+
+      esriConfig.apiKey = "AAPKb695ea59faf640b49e7d0c12f81334baJ-5oIfQlZRf6W9fLvmNemZqv6-vua3f6uGMluLYazQjUwgqNngMhZKOVSyjqRw_U";
+
+      const map = new Map({
+        basemap: "arcgis/topographic"
+      });
+
+      const view = new MapView({
+        map: map,
+        center: [-96.883333, 36.933333],
+        zoom: 5,
+        container: "viewDiv"
+      });
+        
+      
+           // Add sketch widget
+      const graphicsLayerSketch = new GraphicsLayer();
+
+
+      const sketch = new Sketch({
+        layer: graphicsLayerSketch,
+        view: view,
+        availableCreateTools: ["select","point", "polyline", "polygon", "rectangle", "circle"],
+
+        creationMode: "update" // Auto-select
+      });
+
+      view.ui.add(sketch, "top-right");
+        
+        sketch.visibleElements = { 
+  selectionTools:{
+    "lasso-selection": false,
+    "rectangle-selection": false,
+      "feature-selection": false
+      
+  },
+  settingsMenu: false
+}
+
+      // Add sketch events to listen for and execute query
+      sketch.on("update", (event) => {
+          
+           // Create
+        if (event.state === "start") {
+          queryFeaturelayer(event.graphics[0].geometry);
+        }
+        if (event.state === "complete"){
+          graphicsLayerSketch.remove(event.graphics[0]); // Clear the graphic when a user clicks off of it or sketches new one
+        }
+        // Change
+        if (event.toolEventInfo && (event.toolEventInfo.type === "scale-stop" || event.toolEventInfo.type === "reshape-stop" || event.toolEventInfo.type === "move-stop")) {
+          queryFeaturelayer(event.graphics[0].geometry);
+        }
+
+      });   
+        
+
+
+let layerList = new LayerList({
+  view: view
+});
+
+let expand = new Expand({
+  view: view,
+  content: layerList,
+  expanded: false // Collapsed by default
+});
+
+// Adds widget below other elements in the top left corner of the view
+view.ui.add(expand, {
+  position: "top-left"
+});
+        
+        
+        
+        
+     // info window
+    const popupContent = `
+  <div class= "popup-content">
+    <h3>Welcome to the Disaster Loan Data Explorer!</h3>
+    <p>This tool was designed by the SBA ODR&R DART. If you have questions or need assistance, please refer to the help documentation or email Vicky Johnson-Dahl at victoria.johnsondahl@sba.gov.
+      <br><br>
+      Happy Exploring!</p>
+  </div>
+`;
+        
+const popupExpand = new Expand({
+  expandIconClass: "esri-icon-description", // You can use a different icon if needed
+  view: view,
+  content: popupContent,
+  expanded: false // Set to true if you want the pop-up to be expanded by default
+});
+
+view.ui.add(popupExpand, "top-left");    
+    
+
+const popupCounty = {
+    "title": "{County} {State}",
+    "content": [{
+        "type": "text",
+        "text": "<b>County:</b> {County}<br><b>Type: </b>{Type}<br><b>SBA Region:</b> Region {SBARegion}<br><b>FOC:</b> {FOC}<br><b>Approval Rate: </b>{ApprovalRate_Formula}<br><b>Total Approved Applications: </b>{TotalApprovedApps}<br><b>Total Approved Loan Amount: </b>Data Pending<br><b>Recovery Index:</b> {RecoveryIndex}<br><b>Rank in Region:</b> {RankinRegion}<br><b>Rank in FOC:</b> {RankinFOC}<br><b>Rank in Nation:</b> {RankinNation}, {GroupinginNation}<br><b>Percent of Low English Proficiency Residents:</b> {TotalLEPPercent}%<br><b>Top Three Non-English Languages:</b> {TopThreeLangs}<br><b>Number of CDRZs:</b> {CDRZcount} <br><b>Number of HubZone Tracts:</b> {HubZonecount} "
+    }, {
+        "type": "media",
+        "mediaInfos": [{
+            "type": "line-chart",
+            "title": "Loan Approvals 2005-2023",
+            "value": {
+                "colors": [[0, 46, 109, 1], [204, 0, 0, 1]],
+                "fields": ["Approvals_2005","Approvals_2006", "Approvals_2007", "Approvals_2008", "Approvals_2009",  "Approvals_2010", "Approvals_2011",  "Approvals_2012",  "Approvals_2013",  "Approvals_2014",  "Approvals_2015",  "Approvals_2016", "Approvals_2017",  "Approvals_2018",  "Approvals_2019", "Approvals_2020","Approvals_2021",  "Approvals_2022",  "Approvals_2023"],
+                "normalizeField": null,
+                "tooltipField": "Approved and Total Loans",
+                "color": "red",
+
+            }
+        }]
+    }]
+};
+
+        const fireLayer = new FeatureLayer({
+        title: 'Active Wildfire Perimeters',
+        url: "https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/WFIGS_Interagency_Perimeters_Current/FeatureServer/0/query?outFields=*&where=1%3D1",
+             visible: false
+
+          
+      });
+
+      map.add(fireLayer, 0);     
+        
+        
+        const hurrLayer = new FeatureLayer({
+        title: 'Active Tropical Storm & Hurricane Events',
+        url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/Active_Hurricanes_v1/FeatureServer",
+             visible: false         
+      });
+
+      map.add(hurrLayer, 0);   
+        
+        
+        const quakeLayer = new FeatureLayer({
+        url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/USGS_Seismic_Data_v1/FeatureServer",
+        visible: true,
+  
+      });
+
+        const shakeLayer = new FeatureLayer({
+        url: "https://services9.arcgis.com/RHVPKKiFTONKtxq3/arcgis/rest/services/USGS_Seismic_Data_v1/FeatureServer/1",
+        visible: true,
+  
+      });
+        
+const quakegroupLayer = new GroupLayer({
+  title: 'Recent Earthquakes',
+  visible: false,
+  layers: [shakeLayer, quakeLayer]
+});
+
+map.add(quakegroupLayer, 0);
+
+// Create a legend widget
+const legend = new Legend({
+  view: view
+});
+
+// Add the legend widget to the view
+view.ui.add(legend, "bottom-left");
+        
+        
+const floodLayer = new FeatureLayer({
+  title: 'Flood Hazard Areas',
+  url: "https://mapservices.weather.noaa.gov/vector/rest/services/outlooks/sig_riv_fld_outlk/MapServer",
+  visible: false,
+  opacity: 0.5,
+  legendEnabled: true
+});
+
+map.add(floodLayer, 0);
+
+        
+       const sbaLayer = new FeatureLayer({
+         title: 'SBA Regions',
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/SBA_Regions/FeatureServer",
+//             visible: false
+//        outFields: ["CountyMatch","CountyType","population","RISK_RATNG","SOVI_RATNG", "RESL_RATNG", "GROUPING"],
+//        popupTemplate: popupCounty
+          
+      });
+
+      map.add(sbaLayer, 0);
+
+      const stateLayer = new FeatureLayer({
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/US_States/FeatureServer", 
+              legendEnabled: false,
+      });
+
+      map.add(stateLayer, 0);
+        
+      const countiesLayer = new FeatureLayer({
+        title: 'US Counties',
+        legendEnabled: false,
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/CountiesDLDE_ExportFeaturesapr13/FeatureServer",
+        outFields: ["AFFGEOID", "County", "State", "Type", "AllApps_2005", "AllApps_2006", "AllApps_2007", "AllApps_2008", "AllApps_2009", "AllApps_2010", "AllApps_2011", "AllApps_2012", "AllApps_2013", "AllApps_2014", "AllApps_2015", "AllApps_2016", "AllApps_2017", "AllApps_2018", "AllApps_2019", "AllApps_2020", "AllApps_2021", "AllApps_2022", "AllApps_2023", "AllApps_2024", "Approvals_2005", "Approvals_2006", "Approvals_2007", "Approvals_2008", "Approvals_2009", "Approvals_2010", "Approvals_2011", "Approvals_2012", "Approvals_2013", "Approvals_2014", "Approvals_2015", "Approvals_2016", "Approvals_2017", "Approvals_2018", "Approvals_2019", "Approvals_2020", "Approvals_2021", "Approvals_2022", "Approvals_2023", "Approvals_2024", "TotalApprovedApps", "TotalDeclinedApps", "TotalApprovalsAndDeclines", "ApprovalRate_Formula", "CDRZcount", "HubZonecount", "RecoveryIndex", "RecoveryIndex_full", "SBARegion", "FOC", "RankinRegion", "RankinFOC", "RankinNation", "GroupinginNation", "peopleofallagesinpoverty2021", "pctpoverty2021", "medianHHincome2021", "Population_2020", "PercentofpopLEP", "TotalLEPPercent", "TopThreeLangs", "Rural_Urban_Continuum_Code", "RUC_Desc", "FEMA_NationalRiskIndex_Rating", "FEMA_EstAnnualLoss_Rating", "FEMA_SocialVulnerability_Rating", "FEMA_CoastalFlooding_RiskRating", "FEMA_ColdWave_RiskRating", "FEMA_Drought_RiskRating", "FEMA_Earthquake_RiskRating", "FEMA_HeatWave_RiskRating", "FEMA_Hurricane_RiskRating", "FEMA_IceStorm_RiskRating", "FEMA_StrongWind_RiskRating", "FEMA_Tornado_RiskRating", "FEMA_Wildfire_RiskRating", "FEMA_WinterWeather_RiskRating", "GroupinginNation", "Top5", "Top10", "Top25", "Top50", "Bottom50"],
+
+        popupTemplate: popupCounty
+          
+      });
+        
+        function queryFeaturelayer(geometry) {
+
+        const countiesQuery = {
+         spatialRelationship: "intersects", // Relationship operation to apply
+         geometry: geometry,  // The sketch feature geometry
+         outFields: ["AFFGEOID", "County", "State", "Type", "AllApps_2005", "AllApps_2006", "AllApps_2007", "AllApps_2008", "AllApps_2009", "AllApps_2010", "AllApps_2011", "AllApps_2012", "AllApps_2013", "AllApps_2014", "AllApps_2015", "AllApps_2016", "AllApps_2017", "AllApps_2018", "AllApps_2019", "AllApps_2020", "AllApps_2021", "AllApps_2022", "AllApps_2023", "AllApps_2024", "Approvals_2005", "Approvals_2006", "Approvals_2007", "Approvals_2008", "Approvals_2009", "Approvals_2010", "Approvals_2011", "Approvals_2012", "Approvals_2013", "Approvals_2014", "Approvals_2015", "Approvals_2016", "Approvals_2017", "Approvals_2018", "Approvals_2019", "Approvals_2020", "Approvals_2021", "Approvals_2022", "Approvals_2023", "Approvals_2024", "TotalApprovedApps", "TotalDeclinedApps", "TotalApprovalsAndDeclines", "ApprovalRate_Formula", "CDRZcount", "HubZonecount", "RecoveryIndex", "RecoveryIndex_full", "SBARegion", "FOC", "RankinRegion", "RankinFOC", "RankinNation", "GroupinginNation", "peopleofallagesinpoverty2021", "pctpoverty2021", "medianHHincome2021", "Population_2020", "PercentofpopLEP", "TotalLEPPercent", "TopThreeLangs", "Rural_Urban_Continuum_Code", "RUC_Desc", "FEMA_NationalRiskIndex_Rating", "FEMA_EstAnnualLoss_Rating", "FEMA_SocialVulnerability_Rating", "FEMA_CoastalFlooding_RiskRating", "FEMA_ColdWave_RiskRating", "FEMA_Drought_RiskRating", "FEMA_Earthquake_RiskRating", "FEMA_HeatWave_RiskRating", "FEMA_Hurricane_RiskRating", "FEMA_IceStorm_RiskRating", "FEMA_StrongWind_RiskRating", "FEMA_Tornado_RiskRating", "FEMA_Wildfire_RiskRating", "FEMA_WinterWeather_RiskRating", "GroupinginNation", "Top5", "Top10", "Top25", "Top50", "Bottom50"],
+         returnGeometry: true
+        };
+console.log(countiesQuery.outFields);
+               countiesLayer.queryFeatures(countiesQuery)
+        .then((results) => {
+
+                    console.log("Feature count: " + results.features.length)
+
+          displayResults(results);
+
+        }).catch((error) => {
+          console.log(error);
+        });
+
+      }
+
+        // Show features (graphics)
+      function displayResults(results) {
+
+      // Create a blue polygon
+        const symbol = {
+          type: "simple-fill",
+          color: [ 20, 130, 200, 0.5 ],
+          outline: {
+            color: "white",
+            width: .5
+          },
+        };
+
+
+            // Set symbol and popup
+        results.features.map((feature) => {
+          feature.symbol = symbol;
+          feature.popupContent = popupContent;
+          return feature;
+        });  
+         
+         // Clear display
+        view.closePopup();
+        view.graphics.removeAll();
+       // Add features to graphics layer
+        view.graphics.addMany(results.features);
+  
+          
+      }
+
+      map.add(countiesLayer, 0);
+        
+
+        
+        
+        
+        
+        // Get the reset button element
+const resetButton = document.getElementById("resetButton");
+
+// Reset button click event handler
+resetButton.addEventListener('click', () => {
+  // Reset the map to its initial state
+ location.reload();
+
+
+});
+
+
+
+const searchWidget = new Search({
+  view: view,
+  sources: [{
+    layer: countiesLayer,
+    searchFields: ["County"], // Update to the correct field name
+    displayField: "County", // Update to the correct field name
+    exactMatch: false,
+    outFields: ["*"],
+    name: "County Name",
+    placeholder: "Search by County Name"
+  },
+  {
+    layer: sbaLayer,
+    searchFields: ["SBARegion"], // Update to the correct field name
+    displayField: "SBARegion", // Update to the correct field name
+    exactMatch: false,
+    outFields: ["*"],
+    name: "SBA Region", // Name for the SBA layer
+    placeholder: "Search by SBA Region" // Placeholder for the SBA layer
+  },
+           
+           {
+    layer: stateLayer,
+    searchFields: ["Name"], // Update to the correct field name
+    displayField: "Name", // Update to the correct field name
+    exactMatch: false,
+    outFields: ["*"],
+    name: "State", // Name for the SBA layer
+    placeholder: "Search by State" // Placeholder for the SBA layer
+  }],
+});
+        
+
+
+        
+        
+        
+document.getElementById("exportButton").addEventListener("click", function() {
+  const selectedCounties = view.graphics.toArray().filter(graphic => graphic.geometry.type === "polygon");
+  if (selectedCounties.length > 0) {
+    // Get the column headers
+    const headers = Object.keys(selectedCounties[0].attributes);
+    // Prepare CSV content
+    let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
+    // Add data rows
+    csvContent += selectedCounties.map(graphic => {
+      const attributes = graphic.attributes;
+      return headers.map(header => attributes[header]).join(",");
+    }).join("\n");
+
+    const filename = prompt("Enter a filename:", "selected_counties.csv");
+
+    if (filename) {
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", filename);
+      document.body.appendChild(link); // Required for FF
+      link.click();
+    }
+  } else {
+    alert("No counties selected.");
+  }
+});
+
+   
+ const clearSelectionButton = document.getElementById("clearSelectionButton");
+clearSelectionButton.addEventListener("click", () => {
+  view.graphics.removeAll();
+});
+       
+        
+        
+      view.ui.add(searchWidget, {
+        position: "top-right"
+      }); 
+        
+    });
+  </script>
+    <button id="resetButton" class="esri-widget">Reset Map</button>
+    <button id="exportButton" class="esri-widget">Export Selected Counties as CSV</button>
+    <button id="clearSelectionButton" class="esri-widget">Clear Selection</button>
+
+
+</body>
+</html>
+
