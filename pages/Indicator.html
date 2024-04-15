@@ -6,8 +6,14 @@
   <title>DLDE</title>
 
   <style>
-    html,
-    body,
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* Prevent scroll bars */
+}
+      
     #heading {
       padding: 0;
       margin: 0;
@@ -90,6 +96,18 @@
   background-color: white;
   color: #002e6d;
 }
+      
+      .esri-legend {
+    position: absolute;
+    bottom: 75px; /* Adjust as needed to prevent cutting off */
+    left: 10px; /* Adjust as needed */
+    z-index: 1000; /* Ensure it's above other elements */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    padding: 10px;
+    border-radius: 5px;
+    max-height: calc(100vh - 80px); /* Limit height to fit within viewport */
+    overflow-y: auto; /* Add scrollbar if content exceeds max height */
+}
   </style>
 
   <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
@@ -98,7 +116,7 @@
 </head>
 <body>
 
-  <div class="header">&#160;&#160;&#160;Disaster Loan Data Explorer</div>
+  <div class="header">&#160;&#160;&#160;Disaster Loan Data Explorer - Research</div>
   <div id="viewDiv"></div>
 <!--  <div id="dropdown">-->
 
@@ -194,7 +212,7 @@ const popupCounty = {
     "title": "{County} {State}",
     "content": [{
         "type": "text",
-        "text": "<b>County:</b> {County}<br><b>Type: </b>{Type}<br><b>SBA Region:</b> Region {SBARegion}<br><b>FOC:</b> {FOC}<br><b>Approval Rate: </b>{ApprovalRate_Formula}<br><b>Total Approved Applications: </b>{TotalApprovedApps}<br><b>Total Approved Loan Amount: </b>Data Pending<br><b>Recovery Index:</b> {RecoveryIndex}<br><b>Rank in Region:</b> {RankinRegion}<br><b>Rank in FOC:</b> {RankinFOC}<br><b>Rank in Nation:</b> {RankinNation}, {GroupinginNation}<br><b>Percent of Low English Proficiency Residents:</b> {TotalLEPPercent}%<br><b>Top Three Non-English Languages:</b> {TopThreeLangs}<br><b>Number of CDRZs:</b> {CDRZcount} <br><b>Number of HubZone Tracts:</b> {HubZonecount} "
+        "text": "<b>County:</b> {County}<br><b>Type: </b>{Type}<br><b>SBA Region:</b> Region {SBARegion}<br><b>FOC:</b> {FOC}<br><b>Declarations Since 2005:</b> {DeclarationCount}<br><b>Approval Rate: </b>{ApprovalRate_Formula}<br><b>Total Approved Applications: </b>{TotalApprovedApps}<br><b>Total Approved Loan Amount: </b>${TotalApprovedLoanAmt}<br><b>Recovery Index:</b> {RecoveryIndex}<br><b>Rank in Region:</b> {RankinRegion}<br><b>Rank in FOC:</b> {RankinFOC}<br><b>Rank in Nation:</b> {RankinNation}, {GroupinginNation}<br><b>Percent of Low English Proficiency Residents:</b> {TotalLEPPercent}%<br><b>Top Three Non-English Languages:</b> {TopThreeLangs}<br><b>Number of CDRZs:</b> {CDRZcount} <br><b>Number of HubZone Tracts:</b> {HubZonecount} "
     }, {
         "type": "media",
         "mediaInfos": [{
@@ -250,7 +268,92 @@ view.ui.add(legend, "bottom-left");
         title: 'US Counties',
         legendEnabled: false,
         url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/CountiesDLDE_ExportFeaturesapr13/FeatureServer",
-        outFields: ["AFFGEOID", "County", "State", "Type", "AllApps_2005", "AllApps_2006", "AllApps_2007", "AllApps_2008", "AllApps_2009", "AllApps_2010", "AllApps_2011", "AllApps_2012", "AllApps_2013", "AllApps_2014", "AllApps_2015", "AllApps_2016", "AllApps_2017", "AllApps_2018", "AllApps_2019", "AllApps_2020", "AllApps_2021", "AllApps_2022", "AllApps_2023", "AllApps_2024", "Approvals_2005", "Approvals_2006", "Approvals_2007", "Approvals_2008", "Approvals_2009", "Approvals_2010", "Approvals_2011", "Approvals_2012", "Approvals_2013", "Approvals_2014", "Approvals_2015", "Approvals_2016", "Approvals_2017", "Approvals_2018", "Approvals_2019", "Approvals_2020", "Approvals_2021", "Approvals_2022", "Approvals_2023", "Approvals_2024", "TotalApprovedApps", "TotalDeclinedApps", "TotalApprovalsAndDeclines", "ApprovalRate_Formula", "CDRZcount", "HubZonecount", "RecoveryIndex", "RecoveryIndex_full", "SBARegion", "FOC", "RankinRegion", "RankinFOC", "RankinNation", "GroupinginNation", "peopleofallagesinpoverty2021", "pctpoverty2021", "medianHHincome2021", "Population_2020", "PercentofpopLEP", "TotalLEPPercent", "TopThreeLangs", "Rural_Urban_Continuum_Code", "RUC_Desc", "FEMA_NationalRiskIndex_Rating", "FEMA_EstAnnualLoss_Rating", "FEMA_SocialVulnerability_Rating", "FEMA_CoastalFlooding_RiskRating", "FEMA_ColdWave_RiskRating", "FEMA_Drought_RiskRating", "FEMA_Earthquake_RiskRating", "FEMA_HeatWave_RiskRating", "FEMA_Hurricane_RiskRating", "FEMA_IceStorm_RiskRating", "FEMA_StrongWind_RiskRating", "FEMA_Tornado_RiskRating", "FEMA_Wildfire_RiskRating", "FEMA_WinterWeather_RiskRating", "GroupinginNation", "Top5", "Top10", "Top25", "Top50", "Bottom50"],
+        outFields: ["AFFGEOID",
+"County",
+"State",
+"County_State",
+"Type",
+"SBARegion",
+"FOC",
+"DeclarationCount",
+"TotalApprovedLoanAmt",
+"RecoveryIndex",
+"RecoveryIndex_full",
+"RankinRegion",
+"RankinFOC",
+"RankinNation",
+"GroupinginNation",
+"CDRZcount",
+"HubZonecount",
+"peopleofallagesinpoverty2021",
+"pctpoverty2021",
+"medianHHincome2021",
+"Population_2020",
+"PercentofpopLEP",
+"TotalLEPPercent",
+"TopThreeLangs",
+"Rural_Urban_Continuum_Code",
+"RUC_Desc",
+"RUC_Desc_Full",
+"AllApps_2005",
+"AllApps_2006",
+"AllApps_2007",
+"AllApps_2008",
+"AllApps_2009",
+"AllApps_2010",
+"AllApps_2011",
+"AllApps_2012",
+"AllApps_2013",
+"AllApps_2014",
+"AllApps_2015",
+"AllApps_2016",
+"AllApps_2017",
+"AllApps_2018",
+"AllApps_2019",
+"AllApps_2020",
+"AllApps_2021",
+"AllApps_2022",
+"AllApps_2023",
+"AllApps_2024",
+"Approvals_2005",
+"Approvals_2006",
+"Approvals_2007",
+"Approvals_2008",
+"Approvals_2009",
+"Approvals_2010",
+"Approvals_2011",
+"Approvals_2012",
+"Approvals_2013",
+"Approvals_2014",
+"Approvals_2015",
+"Approvals_2016",
+"Approvals_2017",
+"Approvals_2018",
+"Approvals_2019",
+"Approvals_2020",
+"Approvals_2021",
+"Approvals_2022",
+"Approvals_2023",
+"Approvals_2024",
+"TotalApprovedApps",
+"TotalDeclinedApps",
+"TotalApprovalsAndDeclines",
+"ApprovalRate_Formula",
+"FEMA_NationalRiskIndex_Rating",
+"FEMA_EstAnnualLoss_Rating",
+"FEMA_SocialVulnerability_Rating",
+"FEMA_CoastalFlooding_RiskRating",
+"FEMA_ColdWave_RiskRating",
+"FEMA_Drought_RiskRating",
+"FEMA_Earthquake_RiskRating",
+"FEMA_HeatWave_RiskRating",
+"FEMA_Hurricane_RiskRating",
+"FEMA_IceStorm_RiskRating",
+//"FEMA_RiverineFlooding_RiskRating",
+"FEMA_StrongWind_RiskRating",
+"FEMA_Tornado_RiskRating",
+"FEMA_Wildfire_RiskRating",
+"FEMA_WinterWeather_RiskRating"],
 
         popupTemplate: popupCounty
           
@@ -262,7 +365,92 @@ view.ui.add(legend, "bottom-left");
          where: whereClause,
          spatialRelationship: "intersects", // Relationship operation to apply
          geometry: geometry,  // The sketch feature geometry
-         outFields: ["AFFGEOID", "County", "State", "Type", "AllApps_2005", "AllApps_2006", "AllApps_2007", "AllApps_2008", "AllApps_2009", "AllApps_2010", "AllApps_2011", "AllApps_2012", "AllApps_2013", "AllApps_2014", "AllApps_2015", "AllApps_2016", "AllApps_2017", "AllApps_2018", "AllApps_2019", "AllApps_2020", "AllApps_2021", "AllApps_2022", "AllApps_2023", "AllApps_2024", "Approvals_2005", "Approvals_2006", "Approvals_2007", "Approvals_2008", "Approvals_2009", "Approvals_2010", "Approvals_2011", "Approvals_2012", "Approvals_2013", "Approvals_2014", "Approvals_2015", "Approvals_2016", "Approvals_2017", "Approvals_2018", "Approvals_2019", "Approvals_2020", "Approvals_2021", "Approvals_2022", "Approvals_2023", "Approvals_2024", "TotalApprovedApps", "TotalDeclinedApps", "TotalApprovalsAndDeclines", "ApprovalRate_Formula", "CDRZcount", "HubZonecount", "RecoveryIndex", "RecoveryIndex_full", "SBARegion", "FOC", "RankinRegion", "RankinFOC", "RankinNation", "GroupinginNation", "peopleofallagesinpoverty2021", "pctpoverty2021", "medianHHincome2021", "Population_2020", "PercentofpopLEP", "TotalLEPPercent", "TopThreeLangs", "Rural_Urban_Continuum_Code", "RUC_Desc", "FEMA_NationalRiskIndex_Rating", "FEMA_EstAnnualLoss_Rating", "FEMA_SocialVulnerability_Rating", "FEMA_CoastalFlooding_RiskRating", "FEMA_ColdWave_RiskRating", "FEMA_Drought_RiskRating", "FEMA_Earthquake_RiskRating", "FEMA_HeatWave_RiskRating", "FEMA_Hurricane_RiskRating", "FEMA_IceStorm_RiskRating", "FEMA_StrongWind_RiskRating", "FEMA_Tornado_RiskRating", "FEMA_Wildfire_RiskRating", "FEMA_WinterWeather_RiskRating", "GroupinginNation", "Top5", "Top10", "Top25", "Top50", "Bottom50"],
+         outFields: ["AFFGEOID",
+"County",
+"State",
+"County_State",
+"Type",
+"SBARegion",
+"FOC",
+"DeclarationCount",
+"TotalApprovedLoanAmt",
+"RecoveryIndex",
+"RecoveryIndex_full",
+"RankinRegion",
+"RankinFOC",
+"RankinNation",
+"GroupinginNation",
+"CDRZcount",
+"HubZonecount",
+"peopleofallagesinpoverty2021",
+"pctpoverty2021",
+"medianHHincome2021",
+"Population_2020",
+"PercentofpopLEP",
+"TotalLEPPercent",
+"TopThreeLangs",
+"Rural_Urban_Continuum_Code",
+"RUC_Desc",
+"RUC_Desc_Full",
+"AllApps_2005",
+"AllApps_2006",
+"AllApps_2007",
+"AllApps_2008",
+"AllApps_2009",
+"AllApps_2010",
+"AllApps_2011",
+"AllApps_2012",
+"AllApps_2013",
+"AllApps_2014",
+"AllApps_2015",
+"AllApps_2016",
+"AllApps_2017",
+"AllApps_2018",
+"AllApps_2019",
+"AllApps_2020",
+"AllApps_2021",
+"AllApps_2022",
+"AllApps_2023",
+"AllApps_2024",
+"Approvals_2005",
+"Approvals_2006",
+"Approvals_2007",
+"Approvals_2008",
+"Approvals_2009",
+"Approvals_2010",
+"Approvals_2011",
+"Approvals_2012",
+"Approvals_2013",
+"Approvals_2014",
+"Approvals_2015",
+"Approvals_2016",
+"Approvals_2017",
+"Approvals_2018",
+"Approvals_2019",
+"Approvals_2020",
+"Approvals_2021",
+"Approvals_2022",
+"Approvals_2023",
+"Approvals_2024",
+"TotalApprovedApps",
+"TotalDeclinedApps",
+"TotalApprovalsAndDeclines",
+"ApprovalRate_Formula",
+"FEMA_NationalRiskIndex_Rating",
+"FEMA_EstAnnualLoss_Rating",
+"FEMA_SocialVulnerability_Rating",
+"FEMA_CoastalFlooding_RiskRating",
+"FEMA_ColdWave_RiskRating",
+"FEMA_Drought_RiskRating",
+"FEMA_Earthquake_RiskRating",
+"FEMA_HeatWave_RiskRating",
+"FEMA_Hurricane_RiskRating",
+"FEMA_IceStorm_RiskRating",
+//"FEMA_RiverineFlooding_RiskRating",
+"FEMA_StrongWind_RiskRating",
+"FEMA_Tornado_RiskRating",
+"FEMA_Wildfire_RiskRating",
+"FEMA_WinterWeather_RiskRating"],
          returnGeometry: true
         };
 console.log(countiesQuery.outFields);
@@ -375,14 +563,16 @@ resetButton.addEventListener('click', () => {
    // SQL query array
 const countiesLayerSQL = [
   "Choose a SQL where clause...",
+  "DeclarationCount > 20",
+  "DeclarationCount > 10",
+  "TotalApprovedLoanAmt > 10000000",
+  "TotalApprovedLoanAmt > 1000000",
+  "TotalApprovedLoanAmt = 0",
   "RecoveryIndex > 90",
   "RecoveryIndex > 75",
   "RecoveryIndex > 50",
-  "GroupinginNation = 'Top 5%'",
-  "GroupinginNation = 'Top 10%'",
-  "GroupinginNation = 'Top 25%'",
-  "GroupinginNation = 'Top 50%'",
-  "GroupinginNation = 'Bottom 50%'"
+  "CDRZcount > 5",
+  "HubZonecount > 10"
 ];
 let whereClause = countiesLayerSQL[0];
 
@@ -445,31 +635,7 @@ document.getElementById("exportButton").addEventListener("click", function() {
 });
      
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
 
-
-        
-        
         
 document.getElementById("exportButton").addEventListener("click", function() {
   const selectedCounties = view.graphics.toArray().filter(graphic => graphic.geometry.type === "polygon");

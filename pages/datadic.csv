@@ -1,83 +1,87 @@
-Column Name,Description,Source
-AFFGEOID,"A unique geographic identifier for each county, able to be joined to other relevant datasets (the last 5 digits are the FIPS code)",US Census Bureau
-County,County Name,US Census Bureau
-State,State Abbreviation,US Census Bureau
-Type,County type,US Census Bureau
-AllApps_2005,All applications recorded in FY 2005,SBA
-AllApps_2006,All applications recorded in FY 2006,SBA
-AllApps_2007,All applications recorded in FY 2007,SBA
-AllApps_2008,All applications recorded in FY 2008,SBA
-AllApps_2009,All applications recorded in FY 2009,SBA
-AllApps_2010,All applications recorded in FY 2010,SBA
-AllApps_2011,All applications recorded in FY 2011,SBA
-AllApps_2012,All applications recorded in FY 2012,SBA
-AllApps_2013,All applications recorded in FY 2013,SBA
-AllApps_2014,All applications recorded in FY 2014,SBA
-AllApps_2015,All applications recorded in FY 2015,SBA
-AllApps_2016,All applications recorded in FY 2016,SBA
-AllApps_2017,All applications recorded in FY 2017,SBA
-AllApps_2018,All applications recorded in FY 2018,SBA
-AllApps_2019,All applications recorded in FY 2019,SBA
-AllApps_2020,All applications recorded in FY 2020,SBA
-AllApps_2021,All applications recorded in FY 2021,SBA
-AllApps_2022,All applications recorded in FY 2022,SBA
-AllApps_2023,All applications recorded in FY 2023,SBA
-AllApps_2024,All applications recorded in FY 2024 (data only includes a few weeks of FY 2024),SBA
-Approvals_2005,All approved applications recorded in FY 2005,SBA
-Approvals_2006,All approved applications recorded in FY 2006,SBA
-Approvals_2007,All approved applications recorded in FY 2007,SBA
-Approvals_2008,All approved applications recorded in FY 2008,SBA
-Approvals_2009,All approved applications recorded in FY 2009,SBA
-Approvals_2010,All approved applications recorded in FY 2010,SBA
-Approvals_2011,All approved applications recorded in FY 2011,SBA
-Approvals_2012,All approved applications recorded in FY 2012,SBA
-Approvals_2013,All approved applications recorded in FY 2013,SBA
-Approvals_2014,All approved applications recorded in FY 2014,SBA
-Approvals_2015,All approved applications recorded in FY 2015,SBA
-Approvals_2016,All approved applications recorded in FY 2016,SBA
-Approvals_2017,All approved applications recorded in FY 2017,SBA
-Approvals_2018,All approved applications recorded in FY 2018,SBA
-Approvals_2019,All approved applications recorded in FY 2019,SBA
-Approvals_2020,All approved applications recorded in FY 2020,SBA
-Approvals_2021,All approved applications recorded in FY 2021,SBA
-Approvals_2022,All approved applications recorded in FY 2022,SBA
-Approvals_2023,All approved applications recorded in FY 2023,SBA
-Approvals_2024,All approved applications recorded in FY 2024  (data only includes a few weeks of FY 2024),SBA
-TotalApprovedApps,Total approved applications FY 2005-24,SBA
-TotalDeclinedApps,Total declined applications FY 2005-24,SBA
-TotalApprovalsAndDeclines,Total approved applications FY 2005-24,SBA
-ApprovalRate_Formula,Approval Rate using the formula Approvals/(Approvals + Declines),SBA
-CDRZcount,Count of CDRZ zones in the county,FEMA
-HubZonecount,Count of HUBZones in the county,SBA
-RecoveryIndex,"Recovery Index - An ODRR calculation taking into account rankings of FEMA's NRI (50% weight), the total number of declarations FY 2005-24 (weighted 25%), and the sum of loan approval amounts (weighted 25%)",SBA
-RecoveryIndex_full,Recovery Index with all of the digits,SBA
-SBARegion,SBA Region,SBA
-FOC,Field Operations Center East or West,SBA
-RankinRegion,Recovery Index ranking within the SBA region,SBA
-RankinFOC,Recovery Index ranking within the FOC,SBA
-RankinNation,Recovery Index ranking nationwide,SBA
-GroupinginNation,Recovery Index grouping,SBA
-peopleofallagesinpoverty2021,Count of the population in each county of all ages in poverty in 2021,US Census Bureau
-pctpoverty2021,Percentage of the population in each county of all ages in poverty in 2021,US Census Bureau
-medianHHincome2021,Median household income in 2021,US Census Bureau
-Population_2020,Population in 2020,US Census Bureau
-PercentofpopLEP,Percent of the county population with low English proficiency - as a grouping,LEP.gov
-TotalLEPPercent,Percent of the county population with low English proficiency - as a number,LEP.gov
-TopThreeLangs,Top three languages spoken in the county other than English,US Census Bureau
-Rural_Urban_Continuum_Code,A code designating metropolitan counties by population size and nonmetropolitan counties by their degree of urbanization and adjacency to a metro area.,USDA ERS
-RUC_Desc,Description of the Rural-Urban Continuum designation (corresponds to the code),USDA ERS
-FEMA_NationalRiskIndex_Rating,FEMA National Risk Index Rating,FEMA
-FEMA_EstAnnualLoss_Rating,FEMA Estimated Annual Loss Rating,FEMA
-FEMA_SocialVulnerability_Rating,FEMA Social Vulnerability Rating,FEMA
-FEMA_CoastalFlooding_RiskRating,FEMA Coastal Flooding Risk Rating,FEMA
-FEMA_ColdWave_RiskRating,FEMA Cold Wave Risk Rating,FEMA
-FEMA_Drought_RiskRating,FEMA Drought Risk Rating,FEMA
-FEMA_Earthquake_RiskRating,FEMA Earthquake Risk Rating,FEMA
-FEMA_HeatWave_RiskRating,FEMA Heat Wave Risk Rating,FEMA
-FEMA_Hurricane_RiskRating,FEMA Hurricane Risk Rating,FEMA
-FEMA_IceStorm_RiskRating,FEMA Ice Storm Risk Rating,FEMA
-FEMA_RiverineFlooding_RiskRating,FEMA Riverine Flooding Risk Rating,FEMA
-FEMA_StrongWind_RiskRating,FEMA Strong Wind Risk Rating,FEMA
-FEMA_Tornado_RiskRating,FEMA Tornado Risk Rating,FEMA
-FEMA_Wildfire_RiskRating,FEMA Wildfire Risk Rating,FEMA
-FEMA_WinterWeather_RiskRating,FEMA Winter Weather Risk Rating,FEMA
+Column Name,Description,Source,,,,,,
+AFFGEOID,"A unique geographic identifier for each county, able to be joined to other relevant datasets (the last 5 digits are the FIPS code)",US Census Bureau,,,,,,
+County,County name,US Census Bureau,,,,,,
+State,State abbreviation,US Census Bureau,,,,,,
+County_State,County name and state abbreviation,US Census Bureau,,,,,,
+Type,County type,US Census Bureau,,,,,,
+SBARegion,SBA Region,SBA,,,,,,
+FOC,Field Operations Center East or West,SBA,,,,,,
+DeclarationCount,Number of disaster declarations of all types with recorded applications,SBA,,,,,,
+TotalApprovedLoanAmt,Total amount of approved loans for all disasters,SBA,,,,,,
+RecoveryIndex,"Recovery Index - An ODRR calculation taking into account rankings of FEMA's NRI (50% weight), the total number of declarations FY 2005-24 (weighted 25%), and the sum of loan approval amounts (weighted 25%)",SBA,,,,,,
+RecoveryIndex_full,Recovery Index with all of the digits,SBA,,,,,,
+RankinRegion,Recovery Index ranking within the SBA region,SBA,,,,,,
+RankinFOC,Recovery Index ranking within the FOC,SBA,,,,,,
+RankinNation,Recovery Index ranking nationwide,SBA,,,,,,
+GroupinginNation,Recovery Index grouping,SBA,,,,,,
+CDRZcount,Count of CDRZ zones in the county,FEMA,,,,,,
+HubZonecount,Count of HUBZones in the county,SBA,,,,,,
+peopleofallagesinpoverty2021,Count of the population in each county of all ages in poverty in 2021,US Census Bureau,,,,,,
+pctpoverty2021,Percentage of the population in each county of all ages in poverty in 2021,US Census Bureau,,,,,,
+medianHHincome2021,Median household income in 2021,US Census Bureau,,,,,,
+Population_2020,Population in 2020,US Census Bureau,,,,,,
+PercentofpopLEP,Percent of the county population with low English proficiency - as a grouping,LEP.gov,,,,,,
+TotalLEPPercent,Percent of the county population with low English proficiency - as a number,LEP.gov,,,,,,
+TopThreeLangs,Top three languages spoken in the county other than English,US Census Bureau,,,,,,
+Rural_Urban_Continuum_Code,A code designating metropolitan counties by population size and nonmetropolitan counties by their degree of urbanization and adjacency to a metro area.,USDA ERS,,,,,,
+RUC_Desc,Brief description of the Rural-Urban Continuum designation (corresponds to the code),USDA ERS,,,,,,
+RUC_Desc_Full,Continued description of the Rural-Urban Continuum designation (corresponds to the code),USDA ERS,,,,,,
+AllApps_2005,All applications recorded in FY 2005,SBA,,,,,,
+AllApps_2006,All applications recorded in FY 2006,SBA,,,,,,
+AllApps_2007,All applications recorded in FY 2007,SBA,,,,,,
+AllApps_2008,All applications recorded in FY 2008,SBA,,,,,,
+AllApps_2009,All applications recorded in FY 2009,SBA,,,,,,
+AllApps_2010,All applications recorded in FY 2010,SBA,,,,,,
+AllApps_2011,All applications recorded in FY 2011,SBA,,,,,,
+AllApps_2012,All applications recorded in FY 2012,SBA,,,,,,
+AllApps_2013,All applications recorded in FY 2013,SBA,,,,,,
+AllApps_2014,All applications recorded in FY 2014,SBA,,,,,,
+AllApps_2015,All applications recorded in FY 2015,SBA,,,,,,
+AllApps_2016,All applications recorded in FY 2016,SBA,,,,,,
+AllApps_2017,All applications recorded in FY 2017,SBA,,,,,,
+AllApps_2018,All applications recorded in FY 2018,SBA,,,,,,
+AllApps_2019,All applications recorded in FY 2019,SBA,,,,,,
+AllApps_2020,All applications recorded in FY 2020,SBA,,,,,,
+AllApps_2021,All applications recorded in FY 2021,SBA,,,,,,
+AllApps_2022,All applications recorded in FY 2022,SBA,,,,,,
+AllApps_2023,All applications recorded in FY 2023,SBA,,,,,,
+AllApps_2024,All applications recorded in FY 2024 (data only includes a few weeks of FY 2024),SBA,,,,,,
+Approvals_2005,All approved applications recorded in FY 2005,SBA,,,,,,
+Approvals_2006,All approved applications recorded in FY 2006,SBA,,,,,,
+Approvals_2007,All approved applications recorded in FY 2007,SBA,,,,,,
+Approvals_2008,All approved applications recorded in FY 2008,SBA,,,,,,
+Approvals_2009,All approved applications recorded in FY 2009,SBA,,,,,,
+Approvals_2010,All approved applications recorded in FY 2010,SBA,,,,,,
+Approvals_2011,All approved applications recorded in FY 2011,SBA,,,,,,
+Approvals_2012,All approved applications recorded in FY 2012,SBA,,,,,,
+Approvals_2013,All approved applications recorded in FY 2013,SBA,,,,,,
+Approvals_2014,All approved applications recorded in FY 2014,SBA,,,,,,
+Approvals_2015,All approved applications recorded in FY 2015,SBA,,,,,,
+Approvals_2016,All approved applications recorded in FY 2016,SBA,,,,,,
+Approvals_2017,All approved applications recorded in FY 2017,SBA,,,,,,
+Approvals_2018,All approved applications recorded in FY 2018,SBA,,,,,,
+Approvals_2019,All approved applications recorded in FY 2019,SBA,,,,,,
+Approvals_2020,All approved applications recorded in FY 2020,SBA,,,,,,
+Approvals_2021,All approved applications recorded in FY 2021,SBA,,,,,,
+Approvals_2022,All approved applications recorded in FY 2022,SBA,,,,,,
+Approvals_2023,All approved applications recorded in FY 2023,SBA,,,,,,
+Approvals_2024,All approved applications recorded in FY 2024  (data only includes a few weeks of FY 2024),SBA,,,,,,
+TotalApprovedApps,Total approved applications FY 2005-24,SBA,,,,,,
+TotalDeclinedApps,Total declined applications FY 2005-24,SBA,,,,,,
+TotalApprovalsAndDeclines,Total approved applications FY 2005-24,SBA,,,,,,
+ApprovalRate_Formula,Approval Rate using the formula Approvals/(Approvals + Declines),SBA,,,,,,
+FEMA_NationalRiskIndex_Rating,FEMA National Risk Index Rating,FEMA,,,,,,
+FEMA_EstAnnualLoss_Rating,FEMA Estimated Annual Loss Rating,FEMA,,,,,,
+FEMA_SocialVulnerability_Rating,FEMA Social Vulnerability Rating,FEMA,,,,,,
+FEMA_CoastalFlooding_RiskRating,FEMA Coastal Flooding Risk Rating,FEMA,,,,,,
+FEMA_ColdWave_RiskRating,FEMA Cold Wave Risk Rating,FEMA,,,,,,
+FEMA_Drought_RiskRating,FEMA Drought Risk Rating,FEMA,,,,,,
+FEMA_Earthquake_RiskRating,FEMA Earthquake Risk Rating,FEMA,,,,,,
+FEMA_HeatWave_RiskRating,FEMA Heat Wave Risk Rating,FEMA,,,,,,
+FEMA_Hurricane_RiskRating,FEMA Hurricane Risk Rating,FEMA,,,,,,
+FEMA_IceStorm_RiskRating,FEMA Ice Storm Risk Rating,FEMA,,,,,,
+FEMA_RiverineFlooding_RiskRating,FEMA Riverine Flooding Risk Rating,FEMA,,,,,,
+FEMA_StrongWind_RiskRating,FEMA Strong Wind Risk Rating,FEMA,,,,,,
+FEMA_Tornado_RiskRating,FEMA Tornado Risk Rating,FEMA,,,,,,
+FEMA_Wildfire_RiskRating,FEMA Wildfire Risk Rating,FEMA,,,,,,
+FEMA_WinterWeather_RiskRating,FEMA Winter Weather Risk Rating,FEMA,,,,,,
