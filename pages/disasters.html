@@ -157,7 +157,12 @@ html, body {
       "esri/widgets/Sketch",
       "esri/layers/GraphicsLayer",
       "esri/layers/GroupLayer",
-      "esri/layers/FeatureLayer"
+      "esri/layers/FeatureLayer",
+          "esri/symbols/SimpleMarkerSymbol",
+  "esri/renderers/SimpleRenderer",
+  "esri/renderers/UniqueValueRenderer",
+  "esri/symbols/TextSymbol",
+  "esri/layers/support/LabelClass",
         
     ], function(esriConfig,
                  Map,
@@ -171,7 +176,13 @@ html, body {
                  Sketch,
                  GraphicsLayer,
                  GroupLayer,
-                 FeatureLayer) {
+                 FeatureLayer,
+                 SimpleMarkerSymbol,
+                 SimpleRenderer,
+                UniqueValueRenderer,
+                 TextSymbol,
+                 LabelClass
+                 ) {
 
       esriConfig.apiKey = "AAPKb695ea59faf640b49e7d0c12f81334baJ-5oIfQlZRf6W9fLvmNemZqv6-vua3f6uGMluLYazQjUwgqNngMhZKOVSyjqRw_U";
 
@@ -349,6 +360,46 @@ const floodLayer = new FeatureLayer({
 
 map.add(floodLayer, 0);
 
+  
+  var sbatemplate = {
+    title: "{Facility_N}",
+    content: "{Facility_N}"
+  };
+
+  var symbol = {
+    type: "simple-marker",  
+    color: '#cc0000',
+    size: 6
+  };
+
+  var renderer = new SimpleRenderer({
+    symbol: symbol
+  });      
+        
+        
+            const sbaofficesLayer = new FeatureLayer({
+         title: 'SBA Offices',
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/SBAoffices_DLDE/FeatureServer",
+        outFields: ["*"],
+    popupTemplate: sbatemplate,
+    renderer: renderer,
+        visible: false
+      });
+
+ var labelClass = new LabelClass({
+    labelExpressionInfo: { expression: "$feature.Facility_N + ' ' + $feature.Facility_T" },
+    symbol: new TextSymbol({
+      color: "black",
+      haloColor: "white",
+      haloSize: 1,
+      font: { size: 10, weight: "bold" }
+    })
+  });
+        
+    sbaofficesLayer.labelingInfo = [labelClass];      
+      map.add(sbaofficesLayer, 0);    
+               
+        
         
        const sbaLayer = new FeatureLayer({
          title: 'SBA Regions',
@@ -567,11 +618,27 @@ console.log(countiesQuery.outFields);
           displayResults(results);
 
         }).catch((error) => {
-          console.log(error);
+//          console.log(error);
         });
 
       }
 
+
+        
+        
+        const cdrzLayer = new FeatureLayer({
+         title: 'FEMA CDRZ Tracts',
+        url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/CDRZ_dlde/FeatureServer",
+        visible: false,
+          opacity: 0.75
+//        outFields: ["CountyMatch","CountyType","population","RISK_RATNG","SOVI_RATNG", "RESL_RATNG", "GROUPING"],
+//        popupTemplate: popupCounty
+          
+      });       
+        
+           map.add(cdrzLayer, 0);
+        
+        
         // Show features (graphics)
       function displayResults(results) {
 
